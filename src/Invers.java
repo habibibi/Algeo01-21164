@@ -9,7 +9,7 @@ public class Invers {
         } else return false;
     }
 
-    public static Matrix OBL(Matrix m)
+    public static Matrix OBE(Matrix m)
     // Mengembalikan matriks invers dari m menggunakan metode OBE
     // Prekondisi : m matriks persegi
     {
