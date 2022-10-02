@@ -17,7 +17,6 @@ public class SPL {
     // Mengembalikan array yang berisi solusi dari SPL jika solusinya unik, null jika tidak
     {
         if (isUniqueSol(augM)){
-            System.out.println("OKEEEE\n");
             double[] sol = new double[augM.getRow()];
             Matrix eche = new Matrix();
             Matrix.echeForm(augM, eche, true);
