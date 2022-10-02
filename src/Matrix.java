@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.io.*;
 
 public class Matrix {
     private int row;
@@ -63,9 +64,10 @@ public class Matrix {
             }
         }
     }
-    public void print()
-    // Mengoutputkan elemen Matriks saat ini sesuai ukuran yang sudah didefinisikan
+    public void printToScr()
+    // Menuliskan isi Matriks saat ini ke layar;
     {
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out))); //mengubah kembali stream output ke layar
         for (int i = 0;i <= this.getLastIdxRow();i++){
             for (int j = 0;j <= this.getLastIdxCol();j++){
                 System.out.print(mem[i][j]);
@@ -75,6 +77,22 @@ public class Matrix {
         }
     }
     
+    public void printToFile(String fileDir)
+    // Menuliskan isi Matriks saat ini ke sebuah file dengan direktori fileDir
+    throws FileNotFoundException
+    {
+        File file = new File(fileDir);
+        PrintStream stream = new PrintStream(file);
+        System.setOut(stream); //mengubah stream output ke file
+        for (int i = 0;i <= this.getLastIdxRow();i++){
+            for (int j = 0;j <= this.getLastIdxCol();j++){
+                System.out.print(mem[i][j]);
+                if (j != this.getLastIdxCol()) System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
+
     /* ****** Checker ****** */
     public boolean isSquare()
     // Mengembalikan true jika objek merupakan matriks persegi, false jika sebaliknya
