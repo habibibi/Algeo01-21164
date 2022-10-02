@@ -83,10 +83,11 @@ public class SPL {
                 }
             }
         }
-        // Menampilkan matriks eselon baris yang terbentuk
-        printEselonBaris(Persamaan, Hasil, augM.getRow(), augM.getCol());
-        // Substitusi mundur
-        validasi(Persamaan, Hasil);
+        // Ditaro di main.java aja ini
+        // // Menampilkan matriks eselon baris yang terbentuk
+        // printEselonBaris(Persamaan, Hasil, augM.getRow(), augM.getCol());
+        // // Substitusi mundur
+        // validasi(Persamaan, Hasil);
     }
 
     public static void printEselonBaris(Matrix Persamaan, Matrix Hasil, int M, int N){
