@@ -45,4 +45,19 @@ public class SPL {
         }
         return x;
     }
+
+    public static double[] solKaidahCramer(Matrix A,double[] B){
+        double detA = Determinan.reductionRow(A.mem,A.getRow());
+        if (detA == 0) return null;
+        double[] sol = new double[B.length];
+        for (int k = 0;k < B.length;k++){
+            Matrix tmp = new Matrix(A);
+            for (int i = 0;i < tmp.getRow();i++){
+                tmp.mem[i][k] = B[i];
+            }
+            double detK = Determinan.reductionRow(tmp.mem,tmp.getRow());
+            sol[k] = detK/detA; 
+        }
+        return sol;
+    }
 }
