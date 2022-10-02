@@ -46,7 +46,7 @@ public class SPL {
         return x;
     }
 
-    public static void solusi(Matrix augM){
+    public static void solGauss(Matrix augM){
         Matrix Persamaan = new Matrix();
         Matrix Hasil = new Matrix();
         for (int m = 0; m < augM.getRow(); ++m){
