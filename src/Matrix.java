@@ -4,7 +4,7 @@ import java.io.*;
 public class Matrix {
     private int row;
     private int col;
-    double[][] mem;
+    public double[][] mem;
     /* ****** PROTOTIPE PRIMITIF ****** *?
     /* *** Konstruktor *** */ 
     public Matrix(){}
@@ -17,9 +17,14 @@ public class Matrix {
     }
     public Matrix(Matrix A) {
     // Constructor copy dari matrix lain
-        this.row = A.row;
-        this.col = A.col;
-        this.mem = A.mem;
+        this.row = A.getRow();
+        this.col = A.getCol();
+        this.mem = new double[this.row][this.col];
+        for (int i = 0;i < A.getRow();i++){
+            for (int j = 0;j < A.getCol();j++){
+                this.mem[i][j] = A.mem[i][j];
+            }
+        }
     }
     /* *** Selektor *** */
     public int getRow(){
@@ -60,14 +65,42 @@ public class Matrix {
         Scanner in = new Scanner(System.in);
         for (int i = 0;i <= this.getLastIdxRow();i++){
             for (int j = 0;j <= this.getLastIdxCol();j++){
-                mem[i][j] = in.nextDouble();
+                mem[i][j] = in.nextDouble(); 
+            }
+        }
+        in.nextLine();
+    }
+    public void readFromFile(String fileDir)
+    throws FileNotFoundException
+    {
+        Scanner inputfile = new Scanner(new File(fileDir));
+        int rows = 0;
+        int columns = 0;;
+        while (inputfile.hasNextLine()){
+            rows++;
+            columns = 0;
+            Scanner colReader = new Scanner(inputfile.nextLine());
+            while (colReader.hasNextInt()){
+                colReader.nextInt();
+                columns++;
+            }
+        }
+        this.row = rows;
+        this.col = columns;
+        this.mem = new double[rows][columns];
+        inputfile.close();
+        inputfile = new Scanner(new File(fileDir));
+        for (int i = 0;i < this.row;i++){
+            for (int j = 0;j < this.col;j++){
+                if (inputfile.hasNextDouble()){
+                    this.mem[i][j] = inputfile.nextInt();
+                }
             }
         }
     }
     public void printToScr()
     // Menuliskan isi Matriks saat ini ke layar;
     {
-        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out))); //mengubah kembali stream output ke layar
         for (int i = 0;i <= this.getLastIdxRow();i++){
             for (int j = 0;j <= this.getLastIdxCol();j++){
                 System.out.print(mem[i][j]);
@@ -77,20 +110,19 @@ public class Matrix {
         }
     }
     
-    public void printToFile(String fileDir)
+    public void printToFile(String fileDir) 
     // Menuliskan isi Matriks saat ini ke sebuah file dengan direktori fileDir
-    throws FileNotFoundException
+    throws IOException
     {
-        File file = new File(fileDir);
-        PrintStream stream = new PrintStream(file);
-        System.setOut(stream); //mengubah stream output ke file
+        FileWriter writer = new FileWriter(fileDir);
         for (int i = 0;i <= this.getLastIdxRow();i++){
             for (int j = 0;j <= this.getLastIdxCol();j++){
-                System.out.print(mem[i][j]);
-                if (j != this.getLastIdxCol()) System.out.print(" ");
+                writer.write(Double.toString(mem[i][j]));
+                if (j != this.getLastIdxCol()) writer.write(" ");
             }
-            System.out.println();
+            writer.write("\n");
         }
+        writer.close();
     }
 
     /* ****** Checker ****** */
@@ -119,9 +151,12 @@ public class Matrix {
     public static void assign(Matrix m1, Matrix m2)
     // m1 = m2;
     {
-        m2.row = m1.row;
-        m2.col = m1.col;
-        m2.mem = m1.mem;
+        m2 = new Matrix(m1.getRow(),m1.getCol());
+        for (int i = 0;i < m1.getRow();i++){
+            for (int j = 0;j < m1.getCol();j++){
+                m2.mem[i][j] = m1.mem[i][j];
+            }
+        }
     }
     public static Matrix add(Matrix m1,Matrix m2)
     // Mengembalikan matriks hasil dari m1 + m2
@@ -180,6 +215,22 @@ public class Matrix {
         return tmp;
     }
 
+    public static Matrix SPLtoAug(Matrix A,double[] B)
+    // I.S : A dan B terdefinisi
+    // F.S : A diaugment dengan B menjadi AB
+    {
+        Matrix tmp = new Matrix(A.getRow(),A.getCol()+1);
+        for (int i = 0;i < A.getRow();i++){
+            for (int j = 0;j < A.getCol();j++){
+                tmp.mem[i][j] = A.mem[i][j];
+            }
+        }
+        for (int i = 0;i < B.length;i++){
+            tmp.mem[i][A.getCol()+1] = B[i];
+        }
+        return tmp;
+    }
+
     private void swapRow(int i1,int i2)
     // I.S : Matriks terdefinsi
     // F.S : Lolom i1 dan i2 dari matriks menjadi tertukar
@@ -200,14 +251,13 @@ public class Matrix {
         }
     }
 
-    public static double echeForm(Matrix m, Matrix mOut, boolean isReduced)
+    public static void echeForm(Matrix m, Matrix mOut, boolean isReduced)
     // I.S : Matriks m dan isReduced terdefenisi. mOut bebas.
     // F.S : mOut merupakan bentuk echelon form aatu reduced echelon form dari m tergantung input. Selain itu 
     //          prosedur juga mengembalikan sebuah konstanta K yang menunjukkan konstanta determinan matriks setelah
     //          dilakukannya OBE pada matriks
     {
         assign(m,mOut);
-        double kDet = 1;
         for (int i1 = 0;i1 < Math.min(mOut.getRow(),mOut.getCol());i1++){
             int jStart = i1;
             while (jStart < mOut.getCol() && mOut.mem[i1][jStart] == 0){
@@ -229,7 +279,6 @@ public class Matrix {
                 for (int j = jStart;j < m.col;j++){
                     mOut.mem[i1][j] /= divisor;
                 }
-                kDet *= divisor;
             }
             if (isReduced){
                 for (int i2 = 0;i2 < m.row;i2++){
@@ -242,7 +291,6 @@ public class Matrix {
                 }
             }
         }
-        return kDet;
     }
 
     public static void transpose(Matrix m)
