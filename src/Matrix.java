@@ -210,7 +210,7 @@ public class Matrix {
         double kDet = 1;
         for (int i1 = 0;i1 < Math.min(mOut.getRow(),mOut.getCol());i1++){
             int jStart = i1;
-            while (mOut.mem[i1][jStart] == 0 && jStart < mOut.getCol()){
+            while (jStart < mOut.getCol() && mOut.mem[i1][jStart] == 0){
                 int swapidx = i1+1;
                 while (swapidx < mOut.getRow() && mOut.mem[swapidx][jStart] == 0){
                     swapidx++;
