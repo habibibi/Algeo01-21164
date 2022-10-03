@@ -70,9 +70,8 @@ public class Matrix {
         }
         in.nextLine();
     }
-    public void readFromFile(String fileDir)
-    throws FileNotFoundException
-    {
+    public void readFromFile(String fileDir)  throws FileNotFoundException
+    { // Membaca isi matriks dari file
         Scanner inputfile = new Scanner(new File(fileDir));
         int rows = 0;
         int columns = -1;
@@ -101,7 +100,7 @@ public class Matrix {
         }
     }
     public void printToScr()
-    // Menuliskan isi Matriks saat ini ke layar;
+    // Menuliskan isi Matriks saat ini ke layar
     {
         for (int i = 0;i <= this.getLastIdxRow();i++){
             for (int j = 0;j <= this.getLastIdxCol();j++){
@@ -151,7 +150,7 @@ public class Matrix {
 
     /* ****** Operator ****** */
     public static void assign(Matrix m1, Matrix m2)
-    // m1 = m2;
+    // m2 := m1;
     {
         m2.row = m1.getRow();
         m2.col = m1.getCol();

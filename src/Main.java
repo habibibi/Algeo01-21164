@@ -18,19 +18,40 @@ public class Main {
         out.println("Jenis masukan :");
         out.println("1. Keyboard");
         out.println("2. File");
-        out.println("Masukkan pilihan Anda :");
+        out.print("Masukkan pilihan Anda :");
         return in.nextInt();
     }
 
-    public static String inputNamaFile(Scanner in)
+    public static int inputJenisKeluaran(Scanner in)
+    {
+        out.println("Jenis keluaran :");
+        out.println("1. Layar");
+        out.println("2. File");
+        out.print("Masukkan pilihan Anda :");
+        return in.nextInt();
+    }
+
+    public static String inputNamaFileMasukan(Scanner in)
     // Memberikan dialog untuk menerima nama file dari pengguna
     // I.S : in merupakan scanner input utama. Pada layar terdapat \n yang belum dibaca scanner in
     // F.S : Kembalian berupa nama file beserta alamat lengkapnya relatif terhadap program saat ini.
     {
-        out.println("Masukkan nama file input yang sudah diletakkan di test/ (termasuk ekstensi) :");
+        out.println("Masukkan nama file input yang sudah diletakkan di test/input/ (termasuk ekstensi) :");
         in.nextLine();
         String namafile = in.nextLine();
-        namafile = "test/" + namafile; //asumsi sementara program berada di root. Nanti sebelum dikumpul test/ diubah jd ../test/
+        namafile = "test/input/" + namafile; //asumsi sementara program berada di root. Nanti sebelum dikumpul test/ diubah jd ../test/
+        return namafile;
+    }
+
+    public static String inputNamaFileKeluaran(Scanner in)
+    // Memberikan dialog untuk menerima nama file dari pengguna
+    // I.S : in merupakan scanner input utama. Pada layar terdapat \n yang belum dibaca scanner in
+    // F.S : Kembalian berupa nama file beserta alamat lengkapnya relatif terhadap program saat ini.
+    {
+        out.println("Masukkan nama file keluaran yang akan diletakan pada test/output/ (termasuk ekstensi) :");
+        in.nextLine();
+        String namafile = in.nextLine();
+        namafile = "test/output/" + namafile; //asumsi sementara program berada di root. Nanti sebelum dikumpul test/ diubah jd ../test/
         return namafile;
     }
 
@@ -83,49 +104,66 @@ public class Main {
                         B.read();
                         augM = Matrix.combine(A, B);
                     } else {
-                        String namafile = inputNamaFile(in);
+                        String namafile = inputNamaFileMasukan(in);
                         augM.readFromFile(namafile);
                     }
+                    double[] solusi = null;
                     switch (metode){
                         case 1: //Eliminasi Gauss
                         {
-                            out.print("Tekan ENTER untuk kembali ke menu utama");
-                            System.in.read();
+
                             break;
                         }
                         case 2: //Eliminasi Gauss-Jordan
                         {
-                            out.print("Tekan ENTER untuk kembali ke menu utama");
-                            System.in.read();
+                            solusi = SPL.solGaussJordan(augM);
                             break;
                         }
                         case 3: //Matriks Balikan
                         {
-                            out.print("Tekan ENTER untuk kembali ke menu utama");
-                            System.in.read();
+
                             break;
                         }
                         case 4: //Kaidah Cramer
                         {                           
-                            FileWriter writer = new FileWriter("test/out.txt");
-                            double[] solusi = SPL.solKaidahCramer(augM);
-                            if (solusi != null){
-                                out.println("Solusi SPL-nya adalah :");
-                                // Cetak solusi ke layar serta ke sebuah file out.txt
-                                for (int i = 0;i < solusi.length;i++){ 
-                                    out.println("x" + i + " : " + solusi[i]);
-                                    writer.write("x" + i + " : " + Double.toString(solusi[i]) + "\n");
-                                }
-                                writer.close();
-                                out.println("Solusi sudah dicetak di out.txt!");
-                            } else {
-                                out.println("Tidak ada solusi unik!");
-                            }
+                            solusi = SPL.solKaidahCramer(augM);
                             break;
                         }
                         case 0: //Return
                         {
                             break;
+                        }
+
+                    }
+                    clrscr();
+                    int jenisKeluaran = inputJenisKeluaran(in);
+                    if (jenisKeluaran == 1){
+                        if (solusi != null){
+                            for (int i = 0;i < solusi.length;i++){ 
+                                out.println("x" + i + " : " + solusi[i]);
+                            }
+                        } else {
+                            if (SPL.isThereSol(augM)){
+                                SPL.printParaToScr(augM);
+                            } else {
+                                out.println("SPL tidak konsisten, tidak ada solusi!");
+                            }
+                        }
+                    } else {
+                        String fileOut = inputNamaFileKeluaran(in);
+                        FileWriter writer = new FileWriter(new File (fileOut));
+                        if (solusi != null){
+                            for (int i = 0;i < solusi.length;i++){
+                                writer.write(String.format("x%i : %.2f",i,solusi[i]));
+                            }
+                            out.println("Solusi sudah dicetak ke "+ fileOut);
+                        } else {
+                            if (SPL.isThereSol(augM)){
+                                SPL.printParaToFile(augM, fileOut);
+                                out.println("Solusi sudah dicetak ke "+ fileOut);
+                            } else {
+                                out.println("SPL tidak konsisten, tidak ada solusi!");
+                            }
                         }
 
                     }
@@ -152,7 +190,7 @@ public class Main {
                         out.println("Masukkan isi matriks secara berurut (n x n) : ");
                         M.read();
                     } else {
-                        String namafile = inputNamaFile(in);
+                        String namafile = inputNamaFileMasukan(in);
                         M.readFromFile(namafile);
                     }
                     double det;
@@ -172,7 +210,6 @@ public class Main {
                             break;
                         }
                     }
-                    
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
                 }
@@ -195,7 +232,7 @@ public class Main {
                         out.println("Masukkan isi matriks secara berurut : ");
                         M.read();
                     } else {
-                        String namafile = inputNamaFile(in);
+                        String namafile = inputNamaFileMasukan(in);
                         M.readFromFile(namafile);
                     }
                     switch (metode){
@@ -247,7 +284,7 @@ public class Main {
                             y[i] = in.nextDouble();
                         }
                     } else{
-                        String namafile = inputNamaFile(in);
+                        String namafile = inputNamaFileMasukan(in);
                         dataXY.readFromFile(namafile);
                         n = dataXY.getRow()-1;
                         x = new double[n+1];
@@ -293,7 +330,7 @@ public class Main {
                 case 5: // Interpolasi bicubic
                 {
                     //input
-                    String namafile = inputNamaFile(in);
+                    String namafile = inputNamaFileMasukan(in);
                     Matrix M = new Matrix();
                     M.readFromFile(namafile);
                     Scanner inputfile = new Scanner(new File(namafile));
@@ -353,7 +390,7 @@ public class Main {
                         out.println("Masukkan nilai-nilai xk yang akan ditafsir nilainya secara berurut (x1k,x2k,...,xnk) : ");
                         for (int i = 0;i < n;i++) xk[i] = in.nextDouble();
                     } else {
-                        String namafile = inputNamaFile(in);
+                        String namafile = inputNamaFileMasukan(in);
                         data.readFromFile(namafile);
                         n = data.getCol()-1;
                         m = data.getRow();

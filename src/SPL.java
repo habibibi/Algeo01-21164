@@ -1,16 +1,37 @@
-public class SPL {
+import java.io.*;
 
+public class SPL {
     public static boolean isUniqueSol(Matrix augM)
     // Cek apakah solusi dari SPL adalah unik atau tidak.
     {
         Matrix echeM = new Matrix();
         Matrix.echeForm(augM, echeM, false);
         if (augM.getCol()-1 > augM.getRow()) return false;
-        for (int i = 0;i < augM.getCol()-1;i++){
+        for (int i = 0;i < echeM.getCol()-1;i++){
 
             if (echeM.mem[i][i] != 1) return false;
         }
         if (augM.getRow() >= augM.getCol() && augM.mem[augM.getLastIdxCol()][augM.getLastIdxCol()] != 0) return false;
+        return true;
+    }
+
+    public static boolean isThereSol(Matrix augM)
+    // Cek apakah ada solusi dari SPL
+    {
+        Matrix echeM = new Matrix();
+        Matrix.echeForm(augM,echeM,false);
+        for (int i = 0;i < echeM.getRow();i++){
+            boolean isAllZero = true;
+            for (int j = 0;j < echeM.getCol()-1;j++){
+                if (echeM.mem[i][j] != 0) {
+                    isAllZero = false;
+                    break;
+                }
+            }
+            if (!isAllZero && echeM.mem[i][echeM.getLastIdxCol()] == 0){
+                return false;
+            }
+        }
         return true;
     }
 
@@ -28,9 +49,141 @@ public class SPL {
         } else return null;
     }
     
+    public static void printParaToScr(Matrix augM)
+    // I.S augM terdefinisi dan sudah dicek memiliki solusi tak hingga, fileDir terdefinisi dan valid
+    // F.S Solusi parametrik augM ditulis ke file yang dituju
+    {
+        Matrix echeform = new Matrix(augM);
+        Matrix.echeForm(augM, echeform, true);
+        boolean[] ada = new boolean[echeform.getCol()-1]; //default false
+        int[] angka = new int[echeform.getCol()-1];
+        for (int i = 0;i < echeform.getRow();i++){
+            boolean isAllZero = true;
+            for (int j = 0;j < echeform.getCol()-1;j++){
+                if (echeform.mem[i][j] == 1){
+                    ada[j] = true;
+                    isAllZero = false;
+                    break;
+                }
+            }
+            if (isAllZero) break;
+        }
+        int now = 0;
+        for (int i = 0;i < angka.length;i++){
+            if (!ada[i]) {
+                angka[i] = now;
+                now++;
+            }
+        }
+        int befAda = -1;
+        for (int i = 0;i < echeform.getRow();i++){
+            boolean isAllZero = true;
+            for (int j = 0;j < echeform.getCol()-1;j++){
+                if (echeform.mem[i][j] == 1){
+                    isAllZero = false;
+                    for (int k = befAda+1;k < j;k++){
+                        System.out.printf("x%d = a%d\n",k+1,angka[k]);
+                    }
+                    System.out.printf("x%d =",j+1);
+                    boolean first = true;
+                    for (int k = j+1;k < echeform.getCol()-1;k++){
+                        if (echeform.mem[i][k] != 0.0){
+                            if (first) {
+                                System.out.printf(" %.2fa%d",echeform.mem[i][k],angka[k]);
+                                first = false;
+                            } else if (-echeform.mem[i][j] > 0){
+                                System.out.printf(" + %.2fa%d",-echeform.mem[i][k],angka[k]);
+                            } else {
+                                System.out.printf(" - %.2fa%d",echeform.mem[i][k],angka[k]);
+                            }
+                        }
+                    }
+                    int lastidx = echeform.getLastIdxCol();
+                    if (first) System.out.printf(" %f",echeform.mem[i][lastidx]);
+                    else if (echeform.mem[i][lastidx] < 0) System.out.printf(" - %.2f",-echeform.mem[i][lastidx]);
+                    else if (echeform.mem[i][lastidx] > 0) System.out.printf(" + %.2f",echeform.mem[i][lastidx]);
+                    System.out.println();
+                    befAda = j;
+                    break;
+                }
+            }
+            if (isAllZero) break;
+        }
+        for (int k = befAda+1;k < echeform.getCol()-1;k++){
+            System.out.printf("x%d = a%d\n",k+1,angka[k]);
+        }
+        
+    }
+
+    public static void printParaToFile(Matrix augM, String fileDir) throws IOException {
+    // I.S augM terdefinisi dan sudah dicek memiliki solusi tak hingga, fileDir terdefinisi dan valid
+    // F.S Solusi parametrik augM ditulis ke file yang dituju
+        FileWriter writer = new FileWriter(fileDir);
+        Matrix echeform = new Matrix(augM);
+        Matrix.echeForm(augM, echeform, true);
+        boolean[] ada = new boolean[echeform.getCol()-1]; //default false
+        int[] angka = new int[echeform.getCol()-1];
+        for (int i = 0;i < echeform.getRow();i++){
+            boolean isAllZero = true;
+            for (int j = 0;j < echeform.getCol()-1;j++){
+                if (echeform.mem[i][j] == 1){
+                    ada[j] = true;
+                    isAllZero = false;
+                    break;
+                }
+            }
+            if (isAllZero) break;
+        }
+        int now = 0;
+        for (int i = 0;i < angka.length;i++){
+            if (!ada[i]) {
+                angka[i] = now;
+                now++;
+            }
+        }
+        int befAda = -1;
+        for (int i = 0;i < echeform.getRow();i++){
+            boolean isAllZero = true;
+            for (int j = 0;j < echeform.getCol()-1;j++){
+                if (echeform.mem[i][j] == 1){
+                    isAllZero = false;
+                    for (int k = befAda+1;k < j;k++){
+                        writer.write(String.format("x%d = a%d\n",k+1,angka[k]));
+                    }
+                    writer.write(String.format("x%d =",j+1));
+                    boolean first = true;
+                    for (int k = j+1;k < echeform.getCol()-1;k++){
+                        if (echeform.mem[i][k] != 0.0){
+                            if (first) {
+                                writer.write(String.format(" %.2fa%d",echeform.mem[i][k],angka[k]));
+                                first = false;
+                            } else if (-echeform.mem[i][j] > 0){
+                                writer.write(String.format(" + %.2fa%d",-echeform.mem[i][k],angka[k]));
+                            } else {
+                                writer.write(String.format(" - %.2fa%d",echeform.mem[i][k],angka[k]));
+                            }
+                        }
+                    }
+                    int lastidx = echeform.getLastIdxCol();
+                    if (first) writer.write(String.format(" %f",echeform.mem[i][lastidx]));
+                    else if (echeform.mem[i][lastidx] < 0) writer.write(String.format(" - %.2f",-echeform.mem[i][lastidx]));
+                    else if (echeform.mem[i][lastidx] > 0) writer.write(String.format(" + %.2f",echeform.mem[i][lastidx]));
+                    System.out.println();
+                    befAda = j;
+                    break;
+                }
+            }
+            if (isAllZero) break;
+        }
+        for (int k = befAda+1;k < echeform.getCol()-1;k++){
+            writer.write(String.format("x%d = a%d\n",k+1,angka[k]));
+        }
+        writer.close();
+    }
+
     public static double[] solInverse(Matrix A, Matrix B){
         // Mencari solusi Ax = B dengan metode inverse x = A^-1 B
-        // Asumsi awal : matriks A ada inversenya
+        // Mengembalikan null jika A tidak memiliki inverse
         if (Invers.isExistInv(A)){
             Matrix x = Matrix.mult(Invers.invGaussJordan(A), B);
             double[] sol = new double[x.getRow()];
@@ -42,7 +195,9 @@ public class SPL {
         
     }
 
-    public static double[] solKaidahCramer(Matrix augM){
+    public static double[] solKaidahCramer(Matrix augM)
+    // Mengembalikan array solusi unik dari augM menggunakan Kaidah Cramer, null jika tidak ada solusi unik
+    {
         Matrix A = augM.getSubMatrix(0,augM.getLastIdxRow(),0,augM.getLastIdxCol()-1);
         double detA = Determinan.detReductionRow(A);
         if (detA == 0) return null;

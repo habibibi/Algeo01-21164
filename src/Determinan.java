@@ -1,7 +1,7 @@
 public class Determinan {   
-    public static double detCofactorExpansion(Matrix m){
-        // Mengembalikan nilai determinan dari m dengan menggunkan metode ekspansi kofaktor
-        /* !!!!! kompleksitas O(n!), 11x11 aja udh meninggoy !!!!! */
+    public static double detCofactorExpansion(Matrix m)
+    // Mengembalikan nilai determinan dari m dengan menggunakan metode ekspansi kofaktor
+    { 
         double det = 0;
         if (m.getRow() == 2){
             det = m.mem[0][0]*m.mem[1][1] - m.mem[1][0]*m.mem[0][1];
@@ -23,7 +23,9 @@ public class Determinan {
         return det;
     }
 
-    public static double detReductionRow(Matrix M){
+    public static double detReductionRow(Matrix M)
+    // Mengembalikan nilai determinan dari m dengan menggunakan metode reduksi baris
+    {
         Matrix temp = new Matrix(M);
         int N = M.getRow();
         double result = 0;
@@ -45,7 +47,8 @@ public class Determinan {
         return result;
     }
 
-    private static int rowReduction(Matrix M){
+    private static int rowReduction(Matrix M)
+    {
         int i = 0, l = 0, idx, N = M.getCol();
         double pereduksi;
         int count = 0;
