@@ -212,6 +212,7 @@ public class SPL {
         }
         return sol;
     }
+
     public static double[] solGauss(Matrix augM){
         Matrix Persamaan = new Matrix();
         Matrix Hasil = new Matrix();
@@ -223,7 +224,7 @@ public class SPL {
             }
         }
         for (int m = 0; m < augM.getRow(); ++m){
-            Hasil.mem[m][augM.getCol()-1] = augM.mem[m][augM.getCol()-1];
+            Hasil.mem[m][0] = augM.mem[m][augM.getCol()-1];
         }
         for (int k = 0; k < augM.getRow(); ++k){
             // Menerapkan OBE penukaran baris
