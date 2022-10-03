@@ -159,6 +159,7 @@ public class Main {
                     switch (metode){
                         case 1: //Reduksi Baris
                         {
+                            det = Determinan.detReductionRow(M);
                             break;
                         }
                         case 2: //Ekspansi Kofaktor
@@ -226,6 +227,65 @@ public class Main {
                 }
                 case 4: // Interpolasi polinom
                 {
+                    int jenisMasukan = inputJenisMasukan(in);
+                    Matrix dataXY = new Matrix();
+                    Matrix dataX = new Matrix();
+                    Matrix dataY = new Matrix();
+                    double[] dataA;
+                    int n;
+                    double[] x, y;
+                    double inputX, nilaifx;
+                    if (jenisMasukan == 1){
+                        out.println("Masukkan nilai n : ");
+                        n = in.nextInt();
+                        x = new double[n+1];
+                        y = new double[n+1];
+                        out.println("Masukkan titik-titik x dan y (cukup dipisah spasi tanpa kurung)");
+                        out.println("Dimulai dari x0 y0, x1 y1, ... xn yn :");
+                        for (int i = 0; i <= n; ++i){
+                            x[i] = in.nextDouble();
+                            y[i] = in.nextDouble();
+                        }
+                    } else{
+                        String namafile = inputNamaFile(in);
+                        dataXY.readFromFile(namafile);
+                        n = dataXY.getRow()-1;
+                        x = new double[n+1];
+                        y = new double[n+1];
+                        for (int i = 0; i <= n; ++i){
+                            x[i] = dataXY.mem[i][0];
+                            y[i] = dataXY.mem[i][1];
+                        }
+                    }
+                    dataX = new Matrix(n+1, n+1);
+                    dataY = new Matrix(n+1, 1);
+                    for (int i = 0; i <= n; ++i){
+                        for (int j = 0; j <= n; ++j){
+                            dataX.mem[i][j] = Math.pow(x[j], j);
+                        }
+                        dataY.mem[i][0] = y[i];
+                    }
+                    dataA = new double[n+1];
+                    dataA = SPL.solInverse(dataX, dataY);
+                    String fungsi = "";
+                    String elmtA, elmtX;
+                    for (int k = 0; k <= n; ++k){
+                        elmtA = Double.toString(dataA[k]);
+                        elmtX = Double.toString(k);
+                        fungsi = fungsi.concat(elmtA + "x^" + elmtX + " ");
+                    }
+                    out.println("Persamaan f(x) = " + fungsi);
+                    out.println("Masukkan nilai x yang ingin dicari nilainya : ");
+                    inputX = in.nextDouble();
+                    nilaifx = 0.0;
+                    for (int l = 0; l <= n; ++l){
+                        nilaifx += dataA[l]*Math.pow(inputX, l);
+                    }
+                    out.printf("Nilai dari f(%lf) = %lf\n", x, nilaifx);
+                    FileWriter writer = new FileWriter("test/out.txt");
+                    writer.write(fungsi);
+                    writer.write(Double.toString(nilaifx)+"\n");
+                    writer.close();
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
                     break;
