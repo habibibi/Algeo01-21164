@@ -261,7 +261,6 @@ public class SPL {
                 }
                 solusi[i] = (Hasil.mem[i][0] - jumlah) / Persamaan.mem[i][i];
             }
-            System.out.println(solusi);
             return solusi;
         } else if
             ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] == 0) && (Hasil.mem[Hasil.getRow()-1][Hasil.getCol()-1] != 0)){
