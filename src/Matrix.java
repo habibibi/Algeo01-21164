@@ -75,15 +75,17 @@ public class Matrix {
     {
         Scanner inputfile = new Scanner(new File(fileDir));
         int rows = 0;
-        int columns = 0;;
+        int columns = -1;
         while (inputfile.hasNextLine()){
-            rows++;
-            columns = 0;
+            int tmpcol = 0;
             Scanner colReader = new Scanner(inputfile.nextLine());
-            while (colReader.hasNextInt()){
-                colReader.nextInt();
-                columns++;
+            while (colReader.hasNextDouble()){
+                colReader.nextDouble();
+                tmpcol++;
             }
+            if (columns == -1) columns = tmpcol;
+            else if (tmpcol != columns) break;
+            rows++;
         }
         this.row = rows;
         this.col = columns;
@@ -93,7 +95,7 @@ public class Matrix {
         for (int i = 0;i < this.row;i++){
             for (int j = 0;j < this.col;j++){
                 if (inputfile.hasNextDouble()){
-                    this.mem[i][j] = inputfile.nextInt();
+                    this.mem[i][j] = inputfile.nextDouble();
                 }
             }
         }
