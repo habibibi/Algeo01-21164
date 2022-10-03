@@ -10,17 +10,28 @@ public class Main {
         System.out.println("\033[H\033[2J");
     }
 
-    public static int InputJenisMasukan(Scanner in)
+    public static int inputJenisMasukan(Scanner in)
     // Menampilkan menu untuk menginput jenis masukan yang diinginkan
     // I.S : in merupakan scanner input utama
     // F.S : Kembalian berupa jenis masukan yang diinginkan, 1 untuk keyboard dan 2 untuk file.
     {
-        clrscr();
         out.println("Jenis masukan :");
         out.println("1. Keyboard");
         out.println("2. File");
         out.println("Masukkan pilihan Anda :");
         return in.nextInt();
+    }
+
+    public static String inputNamaFile(Scanner in)
+    // Memberikan dialog untuk menerima nama file dari pengguna
+    // I.S : in merupakan scanner input utama. Pada layar terdapat \n yang belum dibaca scanner in
+    // F.S : Kembalian berupa nama file beserta alamat lengkapnya relatif terhadap program saat ini.
+    {
+        out.println("Masukkan nama file input yang sudah diletakkan di test/ (termasuk ekstensi) :");
+        in.nextLine();
+        String namafile = in.nextLine();
+        namafile = "test/" + namafile; //asumsi sementara program berada di root. Nanti sebelum dikumpul test/ diubah jd ../test/
+        return namafile;
     }
 
     public static void main(String[] args)
@@ -54,6 +65,27 @@ public class Main {
                     out.println("0. Kembali");
                     out.print("Masukkan pilihan anda : ");
                     int metode = in.nextInt();
+                    clrscr();
+                    int jenisMasukan = inputJenisMasukan(in);
+                    Matrix augM = new Matrix();
+                    if (metode == 3 || metode == 4) out.println("Ukuran matriks harus berupa persegi!");
+                    if (jenisMasukan == 1){
+                        int m,n;
+                        out.print("Masukkan banyak baris (m): ");
+                        m = in.nextInt();
+                        out.print("Masukkan banyak kolom (n): ");
+                        n = in.nextInt();
+                        Matrix A = new Matrix(m,n);
+                        out.println("Masukkan nilai Aij secara berurut :");
+                        A.read();
+                        out.println("Masukkan nilai Bi secara berurut :");
+                        Matrix B =  new Matrix(m,1);
+                        B.read();
+                        augM = Matrix.combine(A, B);
+                    } else {
+                        String namafile = inputNamaFile(in);
+                        augM.readFromFile(namafile);
+                    }
                     switch (metode){
                         case 1: //Eliminasi Gauss
                         {
@@ -74,40 +106,11 @@ public class Main {
                             break;
                         }
                         case 4: //Kaidah Cramer
-                        {
-                            Matrix A = new Matrix();
-                            double[] B;
-                            int jenisMasukan = InputJenisMasukan(in);
-                            if (jenisMasukan == 1){
-                                int n;
-                                out.print("Masukkan ukuran matriks (n): ");
-                                n = in.nextInt();
-                                A = new Matrix(n,n);
-                                out.println("Masukkan nilai Aij secara berurut :");
-                                A.read();
-                                out.println("Masukkan nilai Bi secara berurut :");
-                                B =  new double[n];
-                                for (int i = 0;i < n;i++){
-                                    B[i] = in.nextDouble();
-                                }
-                            } else {
-                                out.println("Masukkan nama file input (termasuk ekstensi) :");
-                                in.nextLine();
-                                String namafile = in.nextLine();
-                                Matrix inp = new Matrix();
-                                inp.readFromFile("test/"+namafile);
-                                A = new Matrix();
-                                A = inp.getSubMatrix(0, 0, inp.getLastIdxRow(), inp.getLastIdxCol()-1);
-                                B = new double[inp.getRow()];
-                                for (int i = 0;i < inp.getRow();i++){
-                                    B[i] = inp.mem[i][inp.getLastIdxCol()];
-                                }
-                            }
-                            
+                        {                           
                             FileWriter writer = new FileWriter("test/out.txt");
-                            double[] solusi = SPL.solKaidahCramer(A, B);
+                            double[] solusi = SPL.solKaidahCramer(augM);
                             if (solusi != null){
-                                out.println("Solusi SPL nya adalah :");
+                                out.println("Solusi SPL-nya adalah :");
                                 // Cetak solusi ke layar serta ke sebuah file out.txt
                                 for (int i = 0;i < solusi.length;i++){ 
                                     out.println("x" + i + " : " + solusi[i]);
@@ -118,16 +121,16 @@ public class Main {
                             } else {
                                 out.println("Tidak ada solusi unik!");
                             }
-
-                            out.print("Tekan ENTER untuk kembali ke menu utama");
-                            System.in.read();
                             break;
                         }
                         case 0: //Return
                         {
                             break;
                         }
+
                     }
+                    out.print("Tekan ENTER untuk kembali ke menu utama");
+                    System.in.read();
                     break;
                 }
                 case 2: //Determinan
@@ -138,18 +141,29 @@ public class Main {
                     out.println("0. Kembali");
                     out.print("Masukkan pilihan anda : ");
                     int metode = in.nextInt();
-                    out.println();
+                    clrscr();
+                    int jenisMasukan = inputJenisMasukan(in);
+                    Matrix M = new Matrix();
+                    if (jenisMasukan == 1){
+                        int n;
+                        out.print("Masukkan ukuran matriks persegi (n) : ");
+                        n = in.nextInt();
+                        M = new Matrix(n,n);
+                        out.println("Masukkan isi matriks secara berurut (n x n) : ");
+                        M.read();
+                    } else {
+                        String namafile = inputNamaFile(in);
+                        M.readFromFile(namafile);
+                    }
+                    double det;
                     switch (metode){
                         case 1: //Reduksi Baris
                         {
-                            out.print("Tekan ENTER untuk kembali ke menu utama");
-                            System.in.read();
                             break;
                         }
                         case 2: //Ekspansi Kofaktor
                         {
-                            out.print("Tekan ENTER untuk kembali ke menu utama");
-                            System.in.read();
+                            det = Determinan.detCofactorExpansion(M);
                             break;
                         }
                         case 0: //Return
@@ -157,6 +171,9 @@ public class Main {
                             break;
                         }
                     }
+                    
+                    out.print("Tekan ENTER untuk kembali ke menu utama");
+                    System.in.read();
                 }
                 case 3: //Matriks balikan
                 {
@@ -165,14 +182,34 @@ public class Main {
                     out.println("2. Matriks Adjoin");
                     out.println("0. Kembali");
                     out.print("Masukkan pilihan anda : ");
-                    int metode = in.nextInt();
-                    out.println();
+                    int metode = in.nextInt();    
+                    clrscr();
+                    int jenisMasukan = inputJenisMasukan(in);
+                    Matrix M = new Matrix();
+                    if (jenisMasukan == 1){
+                        int n;
+                        out.print("Masukkan ukuran matriks persegi : ");
+                        n = in.nextInt();
+                        M = new Matrix(n,n);
+                        out.println("Masukkan isi matriks secara berurut : ");
+                        M.read();
+                    } else {
+                        String namafile = inputNamaFile(in);
+                        M.readFromFile(namafile);
+                    }
                     switch (metode){
                         case 1: //Eliminasi Gauss-Jordan
                         {
-                            out.print("Tekan ENTER untuk kembali ke menu utama");
-                            System.in.read();
-                            break;
+                            Matrix invers = Invers.invGaussJordan(M);
+                            if (invers != null){
+                                out.println("Invers matriks tersebut adalah : ");
+                                invers.printToScr();
+                                invers.printToFile("src/out.txt");
+                                out.println("Output sudah dicetak ke out.txt!");
+                            } else {
+                                out.println("Matriks tidak memiliki invers!");
+                            }
+
                         }
                         case 2: //Matriks Adjoin
                         {
@@ -183,6 +220,9 @@ public class Main {
                         case 0: //Return
                             break;
                     } 
+                    out.print("Tekan ENTER untuk kembali ke menu utama");
+                    System.in.read();
+                    break;
                 }
                 case 4: // Interpolasi polinom
                 {
@@ -192,13 +232,52 @@ public class Main {
                 }
                 case 5: // Interpolasi bicubic
                 {
+                    //input
+                    String namafile = inputNamaFile(in);
+                    Matrix M = new Matrix();
+                    M.readFromFile(namafile);
+                    Scanner inputfile = new Scanner(new File(namafile));
+                    for (int i = 0;i < M.getCol();i++) inputfile.nextLine();
+                    double x = inputfile.nextDouble();
+                    double y = inputfile.nextDouble();
+                    //Algoritma
+                    //Generate Matriks A
+                    Matrix A = new Matrix(16,16);
+                    int x0 = -1, y0 = -1;
+                    for (int corY = 0;corY < 4;corY++){
+                        for (int corX = 0;corX < 4;corX++){
+                            for (int j = 0;j < 4;j++){
+                                for (int i = 0;i < 4;i++){
+                                    A.mem[corY*4+corX][j*4+i] = Math.pow(x0+corX,i)*Math.pow(y0+corY,j);
+                                }
+                            }
+                        }
+                    }
+                    Matrix B = new Matrix(16,1);
+                    for (int i = 0;i < 4;i++){
+                        for (int j = 0;j < 4;j++){
+                            B.mem[i*4+j][0] = M.mem[i][j];
+                        }
+                    }
+                    double[] sol = SPL.solInverse(A, B);
+                    double res = 0;
+                    for (int j = 0;j < 4;j++){
+                        for (int i = 0;i < 4;i++){
+                            res += sol[j*4+i]*Math.pow(x,i)*Math.pow(y,j);
+                        }
+                    }
+                    //output
+                    out.printf("Nilai dari f(%.2f,%.2f) adalah %.2f\n",x,y,res);
+                    FileWriter writer = new FileWriter("test/out.txt");
+                    writer.write(Double.toString(res)+"\n");
+                    writer.close();
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
                     break;
                 }
                 case 6: // Regresi linier berganda
                 {
-                    int jenisMasukan = InputJenisMasukan(in);
+                    int jenisMasukan = inputJenisMasukan(in);
                     Matrix data = new Matrix();
                     double[] xk;
                     int n,m;
@@ -208,16 +287,13 @@ public class Main {
                         out.println("Masukkan banyak sampel (m) :");
                         m = in.nextInt();
                         data = new Matrix(m,n+1);
-                        out.println("Masukkan data tiap sampel secara berurut (x1i,x2,....,xni,yi) : ");
+                        out.println("Masukkan data tiap sampel secara berurut (x1i,x2i,....,xni,yi) : ");
                         data.read();
                         xk = new double[n];
                         out.println("Masukkan nilai-nilai xk yang akan ditafsir nilainya secara berurut (x1k,x2k,...,xnk) : ");
                         for (int i = 0;i < n;i++) xk[i] = in.nextDouble();
                     } else {
-                        out.println("Masukkan nama file input (termasuk ekstensi) :");
-                        in.nextLine();
-                        String namafile = in.nextLine();
-                        namafile = "test/" + namafile;
+                        String namafile = inputNamaFile(in);
                         data.readFromFile(namafile);
                         n = data.getCol()-1;
                         m = data.getRow();

@@ -28,7 +28,7 @@ public class Invers {
             }
             Matrix eche = new Matrix();
             Matrix.echeForm(tmp, eche, true);
-            return eche.getSubMatrix(0, size, eche.getLastIdxRow(), eche.getLastIdxCol());
+            return eche.getSubMatrix(0, eche.getLastIdxRow(), size, eche.getLastIdxCol());
         } else return null;
     }
 }

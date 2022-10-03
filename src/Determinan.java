@@ -9,11 +9,11 @@ public class Determinan {
             for (int j = 0;j < m.getCol();j++){
                 Matrix tmp = new Matrix();
                 if (j == 0){
-                    tmp = m.getSubMatrix(1,1,m.getLastIdxRow(),m.getLastIdxCol());
+                    tmp = m.getSubMatrix(1,m.getLastIdxRow(),1,m.getLastIdxCol());
                 } else if (j == m.getCol()-1){
-                    tmp = m.getSubMatrix(1,0,m.getLastIdxRow(),m.getLastIdxCol()-1);
+                    tmp = m.getSubMatrix(1,m.getLastIdxRow(),0,m.getLastIdxCol()-1);
                 } else {
-                    tmp = Matrix.combine(m.getSubMatrix(1,0,m.getLastIdxRow(),j-1),m.getSubMatrix(1,j+1,m.getLastIdxRow(),m.getLastIdxCol()));
+                    tmp = Matrix.combine(m.getSubMatrix(1,m.getLastIdxRow(),0,j-1),m.getSubMatrix(1,m.getLastIdxRow(),j+1,m.getLastIdxCol()));
                 }
                 double subDet = detCofactorExpansion(tmp);
                 if (j %2 == 0)det += subDet * m.mem[0][j];

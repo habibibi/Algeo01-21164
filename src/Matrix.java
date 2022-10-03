@@ -46,8 +46,8 @@ public class Matrix {
     // Mengembalikan elemen diagonal m(i,i)
         return this.mem[i][i];
     }
-    public Matrix getSubMatrix(int sRow,int sCol,int fRow, int fCol)
-    // Mengembalikan sub matriks m yang indeks awalnya m(sRow,sCol) dan indeks akhirnya m(fRow,fCol)
+    public Matrix getSubMatrix(int sRow,int fRow,int sCol, int fCol)
+    // Mengembalikan sub matriks m yang barisnya dari indeks sRow hingga fRow dan kolomnya dari indeks sCol hinggal fCol
     {
         Matrix tmp = new Matrix(fRow-sRow+1,fCol-sCol+1);
         for (int i = 0;i < fRow-sRow+1;i++){
@@ -153,7 +153,9 @@ public class Matrix {
     public static void assign(Matrix m1, Matrix m2)
     // m1 = m2;
     {
-        m2 = new Matrix(m1.getRow(),m1.getCol());
+        m2.row = m1.getRow();
+        m2.col = m1.getCol();
+        m2.mem = new double[m2.row][m2.col];
         for (int i = 0;i < m1.getRow();i++){
             for (int j = 0;j < m1.getCol();j++){
                 m2.mem[i][j] = m1.mem[i][j];

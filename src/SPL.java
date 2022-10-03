@@ -28,32 +28,29 @@ public class SPL {
         } else return null;
     }
     
-    public static Matrix solInverse(Matrix augM){
+    public static double[] solInverse(Matrix A, Matrix B){
         // Mencari solusi Ax = B dengan metode inverse x = A^-1 B
         // Asumsi awal : matriks A ada inversenya
-        Matrix A = new Matrix();
-        Matrix B = new Matrix();
-        for (int i = 0; i < augM.getRow(); i++){
-            for (int j = 0; j < augM.getCol()-1; j++){
-                A.mem[i][j] = augM.mem[i][j];
-            }
-            B.mem[i][0] = augM.mem[i][augM.getCol()-1];
-        }
-        Matrix x = new Matrix();
         if (Invers.isExistInv(A)){
-            x = Matrix.mult(Invers.invGaussJordan(A), B);
+            Matrix x = Matrix.mult(Invers.invGaussJordan(A), B);
+            double[] sol = new double[x.getRow()];
+            for (int i = 0;i < x.getRow();i++) sol[i] = x.mem[i][0];
+            return sol;
+        } else {
+            return null;
         }
-        return x;
+        
     }
 
-    public static double[] solKaidahCramer(Matrix A,double[] B){
+    public static double[] solKaidahCramer(Matrix augM){
+        Matrix A = augM.getSubMatrix(0,augM.getLastIdxRow(),0,augM.getLastIdxCol()-1);
         double detA = Determinan.detReductionRow(A);
         if (detA == 0) return null;
-        double[] sol = new double[B.length];
-        for (int k = 0;k < B.length;k++){
+        double[] sol = new double[augM.getRow()];
+        for (int k = 0;k < augM.getRow();k++){
             Matrix tmp = new Matrix(A);
             for (int i = 0;i < tmp.getRow();i++){
-                tmp.mem[i][k] = B[i];
+                tmp.mem[i][k] = augM.mem[i][augM.getLastIdxRow()];
             }
             double detK = Determinan.detReductionRow(tmp);
             sol[k] = detK/detA; 
