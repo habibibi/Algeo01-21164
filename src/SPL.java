@@ -247,7 +247,7 @@ public class SPL {
             for (int i = k + 1; i < augM.getRow(); i++){
                 double rasio = Persamaan.mem[i][k] / Persamaan.mem[k][k];
                 Hasil.mem[i][0] -= rasio * Hasil.mem[k][0];
-                for (int j = k; j < augM.getCol(); j++){
+                for (int j = k; j < augM.getCol()-1; j++){
                     Persamaan.mem[i][j] -= rasio * Persamaan.mem[k][j];
                 }
             }
@@ -256,11 +256,12 @@ public class SPL {
             double[] solusi = new double[Persamaan.getCol()];
             for (int i = Persamaan.getRow() - 1; i >= 0; i--){
                 double jumlah = 0.0;
-                for (int j = i + 1; j < Persamaan.getCol()+1; j++){
+                for (int j = i + 1; j < Persamaan.getCol(); j++){
                     jumlah += Persamaan.mem[i][j] * solusi[j];
                 }
                 solusi[i] = (Hasil.mem[i][0] - jumlah) / Persamaan.mem[i][i];
             }
+            System.out.println(solusi);
             return solusi;
         } else if
             ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] == 0) && (Hasil.mem[Hasil.getRow()-1][Hasil.getCol()-1] != 0)){
