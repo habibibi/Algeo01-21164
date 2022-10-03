@@ -215,6 +215,8 @@ public class SPL {
     public static double[] solGauss(Matrix augM){
         Matrix Persamaan = new Matrix();
         Matrix Hasil = new Matrix();
+        Persamaan = new Matrix(augM.getRow(), augM.getCol()-1);
+        Hasil = new Matrix(augM.getRow(), 1);
         for (int m = 0; m < augM.getRow(); ++m){
             for (int n = 0; n < augM.getCol()-1; ++n){
                 Persamaan.mem[m][n] = augM.mem[m][n];

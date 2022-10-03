@@ -284,6 +284,7 @@ public class Main {
                     Matrix dataXY = new Matrix();
                     Matrix dataX = new Matrix();
                     Matrix dataY = new Matrix();
+                    Matrix koefA = new Matrix();
                     double[] dataA;
                     int n;
                     double[] x, y;
@@ -319,26 +320,34 @@ public class Main {
                         dataY.mem[i][0] = y[i];
                     }
                     dataA = new double[n+1];
-                    dataA = SPL.solInverse(dataX, dataY);
-                    String fungsi = "";
-                    String elmtA, elmtX;
-                    for (int k = 0; k <= n; ++k){
-                        elmtA = Double.toString(dataA[k]);
-                        elmtX = Double.toString(k);
-                        fungsi = fungsi.concat(elmtA + "x^" + elmtX + " ");
+                    koefA = new Matrix(n+1, 1);
+                    for (int i=0; i<n+1; i++){
+                        koefA.mem[i][1] = dataA[i];
                     }
-                    out.println("Persamaan f(x) = " + fungsi);
-                    out.println("Masukkan nilai x yang ingin dicari nilainya : ");
-                    inputX = in.nextDouble();
-                    nilaifx = 0.0;
-                    for (int l = 0; l <= n; ++l){
-                        nilaifx += dataA[l]*Math.pow(inputX, l);
+                    if (Invers.isExistInv(koefA)){
+                        dataA = SPL.solInverse(dataX, dataY);
+                        String fungsi = "";
+                        String elmtA, elmtX;
+                        for (int k = 0; k <= n; ++k){
+                            elmtA = Double.toString(dataA[k]);
+                            elmtX = Double.toString(k);
+                            fungsi = fungsi.concat(elmtA + "x^" + elmtX + " ");
+                        }
+                        out.println("Persamaan f(x) = " + fungsi);
+                        out.println("Masukkan nilai x yang ingin dicari nilainya : ");
+                        inputX = in.nextDouble();
+                        nilaifx = 0.0;
+                        for (int l = 0; l <= n; ++l){
+                            nilaifx += dataA[l]*Math.pow(inputX, l);
+                        }
+                        out.printf("Nilai dari f(%lf) = %lf\n", x, nilaifx);
+                        FileWriter writer = new FileWriter("test/out.txt");
+                        writer.write(fungsi);
+                        writer.write(Double.toString(nilaifx)+"\n");
+                        writer.close();
+                    } else {
+                        out.println("Tidak dapat ditemukan solusinya");
                     }
-                    out.printf("Nilai dari f(%lf) = %lf\n", x, nilaifx);
-                    FileWriter writer = new FileWriter("test/out.txt");
-                    writer.write(fungsi);
-                    writer.write(Double.toString(nilaifx)+"\n");
-                    writer.close();
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
                     break;
