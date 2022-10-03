@@ -6,7 +6,7 @@ public class SPL {
     // Cek apakah solusi dari SPL adalah unik atau tidak.
     {
         Matrix echeM = new Matrix();
-        Matrix.echeForm(augM, echeM, false);
+        Matrix.echeForm(augM, echeM, true);
         if (augM.getCol()-1 > augM.getRow()) return false;
         for (int i = 0;i < echeM.getCol()-1;i++){
 

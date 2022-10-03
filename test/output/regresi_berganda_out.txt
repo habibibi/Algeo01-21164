@@ -1,0 +1,4 @@
+Rumus y yang didapat :
+y = -3.507778 - 0.002625x1 + 0.000799x2 + 0.154155x3
+Nilai yang didapatkan dari f(x1k,x2k,..,xnk)  :
+0.9384342262216849

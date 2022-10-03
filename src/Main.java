@@ -1,5 +1,8 @@
 import java.util.Scanner;
-import Matriks.*;
+import Matriks.Matrix;
+import Matriks.Invers;
+import Matriks.Determinan;
+import Matriks.SPL;
 import static java.lang.System.out;
 import java.io.*;
 
@@ -52,7 +55,7 @@ public class Main {
         out.println("Masukkan nama file keluaran yang akan diletakan pada test/output/ (termasuk ekstensi) :");
         in.nextLine();
         String namafile = in.nextLine();
-        namafile = "../test/output/" + namafile; //asumsi sementara program berada di root. Nanti sebelum dikumpul test/ diubah jd ../test/
+        namafile = "../test/output/" + namafile;
         return namafile;
     }
 
@@ -406,10 +409,15 @@ public class Main {
                         }
                     }
                     //output
-                    out.printf("Nilai dari f(%.2f,%.2f) adalah %.2f\n",x,y,res);
-                    FileWriter writer = new FileWriter("test/out.txt");
-                    writer.write(Double.toString(res)+"\n");
-                    writer.close();
+                    int jenisKeluaran = inputJenisKeluaran(in);
+                    if (jenisKeluaran == 1){
+                        out.printf("Nilai dari f(%.2f,%.2f) adalah %.2f\n",x,y,res);
+                    }else {
+                        String fileDir = inputNamaFileKeluaran(in);
+                        FileWriter writer = new FileWriter(new File(fileDir));
+                        writer.write(Double.toString(res)+"\n");
+                        writer.close();
+                    }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
                     break;
@@ -464,8 +472,7 @@ public class Main {
                     if (sol != null){
                         if (jenisKeluaran == 1){
                             out.println("Rumus y yang didapat :");
-                            String rumus = "y = ";
-                            out.println("y =");
+                            out.print("y =");
                             for (int i = 0;i < sol.length;i++){
                                 if (i == 0)out.printf(" %f",sol[i]);
                                 else{
@@ -507,6 +514,7 @@ public class Main {
                             }
                             writer.write("Nilai yang didapatkan dari f(x1k,x2k,..,xnk)  :\n");
                             writer.write(Double.toString(res));
+                            writer.close();
                         }
                         
                     } else {
