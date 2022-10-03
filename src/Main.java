@@ -202,7 +202,7 @@ public class Main {
                         String namafile = inputNamaFileMasukan(in);
                         M.readFromFile(namafile);
                     }
-                    double det;
+                    double det = 0;
                     switch (metode){
                         case 1: //Reduksi Baris
                         {
@@ -214,6 +214,16 @@ public class Main {
                             det = Determinan.detCofactorExpansion(M);
                             break;
                         }
+                    }
+                    int jenisKeluaran = inputJenisKeluaran(in);
+                    if (jenisKeluaran == 1){
+                        out.println("Nilai determinan Matriks tersebut adalah :");
+                        out.println(det);
+                    } else {
+                        String fileDir = inputNamaFileKeluaran(in);
+                        FileWriter writer = new FileWriter(new File(fileDir));
+                        writer.write(Double.toString(det));
+                        writer.close();
                     }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
