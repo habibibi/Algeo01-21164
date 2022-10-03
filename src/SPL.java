@@ -264,7 +264,8 @@ public class SPL {
             System.out.println("Tidak ada Solusi yang Memenuhi");
             return null;
         } else{
-            System.out.println("Persamaan Memiliki Tak Terhingga Solusi"); 
+            System.out.println("Persamaan Memiliki Tak Terhingga Solusi");
+            printParaToScr(augM);
             return null;
         }
     }

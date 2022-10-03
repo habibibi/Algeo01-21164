@@ -111,7 +111,7 @@ public class Main {
                     switch (metode){
                         case 1: //Eliminasi Gauss
                         {
-
+                            
                             break;
                         }
                         case 2: //Eliminasi Gauss-Jordan
