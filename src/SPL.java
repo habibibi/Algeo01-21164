@@ -213,7 +213,9 @@ public class SPL {
         return sol;
     }
 
-    public static double[] solGauss(Matrix augM){
+    public static double[] solGauss(Matrix augM)
+    {
+        if (!isUniqueSol(augM)) return null;
         Matrix Persamaan = new Matrix();
         Matrix Hasil = new Matrix();
         Persamaan = new Matrix(augM.getRow(), augM.getCol()-1);
@@ -252,22 +254,15 @@ public class SPL {
                 }
             }
         }
-        if ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] != 0)){
-            double[] solusi = new double[Persamaan.getCol()];
-            for (int i = Persamaan.getRow() - 1; i >= 0; i--){
-                double jumlah = 0.0;
-                for (int j = i + 1; j < Persamaan.getCol(); j++){
-                    jumlah += Persamaan.mem[i][j] * solusi[j];
-                }
-                solusi[i] = (Hasil.mem[i][0] - jumlah) / Persamaan.mem[i][i];
+        double[] solusi = new double[Persamaan.getCol()];
+        for (int i = Persamaan.getRow() - 1; i >= 0; i--){
+            double jumlah = 0.0;
+            for (int j = i + 1; j < Persamaan.getCol(); j++){
+                jumlah += Persamaan.mem[i][j] * solusi[j];
             }
-            return solusi;
-        } else if
-            ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] == 0) && (Hasil.mem[Hasil.getRow()-1][Hasil.getCol()-1] != 0)){
-            return null;
-        } else{
-            return null;
+            solusi[i] = (Hasil.mem[i][0] - jumlah) / Persamaan.mem[i][i];
         }
+        return solusi;
     }
 
     public static void printEselonBaris(Matrix Persamaan, Matrix Hasil, int M, int N){
