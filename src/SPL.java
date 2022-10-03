@@ -41,13 +41,13 @@ public class SPL {
         }
         Matrix x = new Matrix();
         if (Invers.isExistInv(A)){
-            x = Matrix.mult(Invers.OBE(A), B);
+            x = Matrix.mult(Invers.invGaussJordan(A), B);
         }
         return x;
     }
 
     public static double[] solKaidahCramer(Matrix A,double[] B){
-        double detA = Determinan.reductionRow(A.mem,A.getRow());
+        double detA = Determinan.detReductionRow(A);
         if (detA == 0) return null;
         double[] sol = new double[B.length];
         for (int k = 0;k < B.length;k++){
@@ -55,7 +55,7 @@ public class SPL {
             for (int i = 0;i < tmp.getRow();i++){
                 tmp.mem[i][k] = B[i];
             }
-            double detK = Determinan.reductionRow(tmp.mem,tmp.getRow());
+            double detK = Determinan.detReductionRow(tmp);
             sol[k] = detK/detA; 
         }
         return sol;

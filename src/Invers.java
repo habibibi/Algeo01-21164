@@ -3,13 +3,12 @@ public class Invers {
    // Cek apakah matriks m memiliki invers
    // Prekondisi : m matriks persegi
     {
-        if (Determinan.cofactorExpansion(m) != 0){
-            /* !!!Bagusnya pake metode OBE!!! */
+        if (Determinan.detReductionRow(m) != 0){
             return true;
         } else return false;
     }
 
-    public static Matrix OBE(Matrix m)
+    public static Matrix invGaussJordan(Matrix m)
     // Mengembalikan matriks invers dari m menggunakan metode OBE
     // Prekondisi : m matriks persegi
     {
