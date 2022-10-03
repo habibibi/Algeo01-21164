@@ -199,6 +199,16 @@ public class Matrix {
         return m3;
     }
 
+    public void timesConst(double k)
+    // Mengembalikan matriks hasil dari m1*m2
+    {
+        for (int i  = 0;i < this.col;i++){
+            for (int j = 0;j < this.row;j++){
+                this.mem[i][j] *= k;
+            }
+        }
+    }
+
     /* *** Operasi lain **** */
     public static Matrix combine(Matrix A,Matrix B)
     // I.S : A dan B terdefinisi
@@ -303,7 +313,7 @@ public class Matrix {
         Matrix tmp = new Matrix(m.col,m.row);
         for (int i = 0;i < m.row;i++){
             for (int j = 0;j < m.col;j++){
-                tmp.mem[j][i] = m.mem[j][i];
+                tmp.mem[j][i] = m.mem[i][j];
             }
         }
         assign(tmp,m);

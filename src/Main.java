@@ -18,7 +18,7 @@ public class Main {
         out.println("Jenis masukan :");
         out.println("1. Keyboard");
         out.println("2. File");
-        out.print("Masukkan pilihan Anda :");
+        out.print("Masukkan pilihan Anda : ");
         return in.nextInt();
     }
 
@@ -27,7 +27,7 @@ public class Main {
         out.println("Jenis keluaran :");
         out.println("1. Layar");
         out.println("2. File");
-        out.print("Masukkan pilihan Anda :");
+        out.print("Masukkan pilihan Anda : ");
         return in.nextInt();
     }
 
@@ -86,6 +86,7 @@ public class Main {
                     out.println("0. Kembali");
                     out.print("Masukkan pilihan anda : ");
                     int metode = in.nextInt();
+                    if (metode == 0) break;
                     clrscr();
                     int jenisMasukan = inputJenisMasukan(in);
                     Matrix augM = new Matrix();
@@ -129,10 +130,6 @@ public class Main {
                             solusi = SPL.solKaidahCramer(augM);
                             break;
                         }
-                        case 0: //Return
-                        {
-                            break;
-                        }
 
                     }
                     clrscr();
@@ -173,12 +170,14 @@ public class Main {
                 }
                 case 2: //Determinan
                 {
+                    clrscr();
                     out.println("Pilih Metode yang akan digunakan: ");
                     out.println("1. Reduksi Baris");
                     out.println("2. Ekspansi Kofaktor");
                     out.println("0. Kembali");
                     out.print("Masukkan pilihan anda : ");
                     int metode = in.nextInt();
+                    if (metode == 0) break;
                     clrscr();
                     int jenisMasukan = inputJenisMasukan(in);
                     Matrix M = new Matrix();
@@ -205,22 +204,20 @@ public class Main {
                             det = Determinan.detCofactorExpansion(M);
                             break;
                         }
-                        case 0: //Return
-                        {
-                            break;
-                        }
                     }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
                 }
                 case 3: //Matriks balikan
                 {
+                    clrscr();
                     out.println("Pilih Metode yang akan digunakan: ");
                     out.println("1. Eliminasi Gauss-Jordan");
                     out.println("2. Matriks Adjoin");
                     out.println("0. Kembali");
                     out.print("Masukkan pilihan anda : ");
                     int metode = in.nextInt();    
+                    if (metode == 0) break;
                     clrscr();
                     int jenisMasukan = inputJenisMasukan(in);
                     Matrix M = new Matrix();
@@ -235,35 +232,44 @@ public class Main {
                         String namafile = inputNamaFileMasukan(in);
                         M.readFromFile(namafile);
                     }
+                    Matrix invers = null;
                     switch (metode){
                         case 1: //Eliminasi Gauss-Jordan
                         {
-                            Matrix invers = Invers.invGaussJordan(M);
-                            if (invers != null){
-                                out.println("Invers matriks tersebut adalah : ");
-                                invers.printToScr();
-                                invers.printToFile("src/out.txt");
-                                out.println("Output sudah dicetak ke out.txt!");
-                            } else {
-                                out.println("Matriks tidak memiliki invers!");
-                            }
-
+                            invers = Invers.invGaussJordan(M);
+                            break;
                         }
                         case 2: //Matriks Adjoin
                         {
-                            out.print("Tekan ENTER untuk kembali ke menu utama");
-                            System.in.read();
+                            invers = Invers.invAdjoint(M);
                             break;
                         }
-                        case 0: //Return
-                            break;
                     } 
+                    int jenisKeluaran = inputJenisKeluaran(in);
+                    if (jenisKeluaran == 1){
+                        if (invers != null){
+                            out.println("Invers matriks tersebut adalah : ");
+                            invers.printToScr();
+                        } else {
+                            out.println("Matriks tidak memiliki invers!");
+                        }
+                    } else {
+                        String fileOut = inputNamaFileKeluaran(in);
+                        if (invers != null){
+                            invers.printToFile(fileOut);
+                            out.println("Solusi sudah dicetak ke "+ fileOut);
+                        } else {
+                            out.println("Matriks tidak memiliki invers!");
+                        }
+                    }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
+                    
                     break;
                 }
                 case 4: // Interpolasi polinom
                 {
+                    clrscr();
                     int jenisMasukan = inputJenisMasukan(in);
                     Matrix dataXY = new Matrix();
                     Matrix dataX = new Matrix();
@@ -329,6 +335,7 @@ public class Main {
                 }
                 case 5: // Interpolasi bicubic
                 {
+                    clrscr();
                     //input
                     String namafile = inputNamaFileMasukan(in);
                     Matrix M = new Matrix();
@@ -374,6 +381,7 @@ public class Main {
                 }
                 case 6: // Regresi linier berganda
                 {
+                    clrscr();
                     int jenisMasukan = inputJenisMasukan(in);
                     Matrix data = new Matrix();
                     double[] xk;
