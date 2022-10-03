@@ -112,7 +112,7 @@ public class Main {
                     switch (metode){
                         case 1: //Eliminasi Gauss
                         {
-                            
+                            solusi = SPL.solGauss(augM);
                             break;
                         }
                         case 2: //Eliminasi Gauss-Jordan
