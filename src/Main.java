@@ -122,7 +122,17 @@ public class Main {
                         }
                         case 3: //Matriks Balikan
                         {
-
+                            Matrix A = new Matrix();
+                            Matrix B = new Matrix();
+                            A = new Matrix(augM.getRow(), augM.getCol()-1);
+                            B = new Matrix(augM.getRow(), 1);
+                            for (int i = 0; i < augM.getRow(); ++i){
+                                for (int j = 0; j < augM.getCol()-1; ++j){
+                                    A.mem[i][j] = augM.mem[i][j];
+                                }
+                                B.mem[i][1] = augM.mem[i][augM.getCol()-1];
+                            }
+                            solusi = SPL.solInverse(A, B);
                             break;
                         }
                         case 4: //Kaidah Cramer
