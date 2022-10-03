@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import Matriks.*;
 import static java.lang.System.out;
 import java.io.*;
 
@@ -39,7 +40,7 @@ public class Main {
         out.println("Masukkan nama file input yang sudah diletakkan di test/input/ (termasuk ekstensi) :");
         in.nextLine();
         String namafile = in.nextLine();
-        namafile = "test/input/" + namafile; //asumsi sementara program berada di root. Nanti sebelum dikumpul test/ diubah jd ../test/
+        namafile = "../test/input/" + namafile;
         return namafile;
     }
 
@@ -51,7 +52,7 @@ public class Main {
         out.println("Masukkan nama file keluaran yang akan diletakan pada test/output/ (termasuk ekstensi) :");
         in.nextLine();
         String namafile = in.nextLine();
-        namafile = "test/output/" + namafile; //asumsi sementara program berada di root. Nanti sebelum dikumpul test/ diubah jd ../test/
+        namafile = "../test/output/" + namafile; //asumsi sementara program berada di root. Nanti sebelum dikumpul test/ diubah jd ../test/
         return namafile;
     }
 
@@ -130,7 +131,7 @@ public class Main {
                                 for (int j = 0; j < augM.getCol()-1; ++j){
                                     A.mem[i][j] = augM.mem[i][j];
                                 }
-                                B.mem[i][1] = augM.mem[i][augM.getCol()-1];
+                                B.mem[i][0] = augM.mem[i][augM.getCol()-1];
                             }
                             solusi = SPL.solInverse(A, B);
                             break;
@@ -142,7 +143,7 @@ public class Main {
                         }
 
                     }
-                    clrscr();
+                    out.println();
                     int jenisKeluaran = inputJenisKeluaran(in);
                     if (jenisKeluaran == 1){
                         if (solusi != null){
@@ -157,15 +158,17 @@ public class Main {
                             }
                         }
                     } else {
-                        String fileOut = inputNamaFileKeluaran(in);
-                        FileWriter writer = new FileWriter(new File (fileOut));
                         if (solusi != null){
+                            String fileOut = inputNamaFileKeluaran(in);
+                            FileWriter writer = new FileWriter(new File (fileOut));
                             for (int i = 0;i < solusi.length;i++){
                                 writer.write(String.format("x%i : %.2f",i,solusi[i]));
                             }
                             out.println("Solusi sudah dicetak ke "+ fileOut);
+                            writer.close();
                         } else {
                             if (SPL.isThereSol(augM)){
+                                String fileOut = inputNamaFileKeluaran(in);
                                 SPL.printParaToFile(augM, fileOut);
                                 out.println("Solusi sudah dicetak ke "+ fileOut);
                             } else {
@@ -215,6 +218,7 @@ public class Main {
                             break;
                         }
                     }
+                    out.println();
                     int jenisKeluaran = inputJenisKeluaran(in);
                     if (jenisKeluaran == 1){
                         out.println("Nilai determinan Matriks tersebut adalah :");
@@ -227,6 +231,7 @@ public class Main {
                     }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
+                    break;
                 }
                 case 3: //Matriks balikan
                 {
@@ -265,6 +270,7 @@ public class Main {
                             break;
                         }
                     } 
+                    out.println();
                     int jenisKeluaran = inputJenisKeluaran(in);
                     if (jenisKeluaran == 1){
                         if (invers != null){
@@ -356,7 +362,7 @@ public class Main {
                         writer.write(Double.toString(nilaifx)+"\n");
                         writer.close();
                     } else {
-                        out.println("Tidak dapat ditemukan solusinya");
+                        out.println("Tidak dapat ditemukan solusi uniknya");
                     }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
@@ -439,7 +445,6 @@ public class Main {
                         }
                         inputfile.close();
                     }
-                    out.printf("%d %d\n",n,m);
                     Matrix augM = new Matrix(n+1,n+2);
                     for (int i = 0;i < n+1;i++){
                         for (int j = 0;j < n+2;j++){
@@ -454,7 +459,59 @@ public class Main {
                             }
                         }
                     }
-                    augM.printToScr();
+                    int jenisKeluaran = inputJenisKeluaran(in);
+                    double[] sol = SPL.solGauss(augM);
+                    if (sol != null){
+                        if (jenisKeluaran == 1){
+                            out.println("Rumus y yang didapat :");
+                            String rumus = "y = ";
+                            out.println("y =");
+                            for (int i = 0;i < sol.length;i++){
+                                if (i == 0)out.printf(" %f",sol[i]);
+                                else{
+                                    if (sol[i] >= 0){
+                                        out.printf(" + %fx%d",sol[i],i);
+                                    } else {
+                                        out.printf(" - %fx%d",-sol[i],i);
+                                    }
+                                }
+                            }
+                            out.println();
+                            double res = 0;
+                            for (int i = 0;i < sol.length;i++){
+                                if (i == 0) res += sol[0];
+                                else res += sol[i]*xk[i-1];
+                            }
+                            out.println("Nilai yang didapatkan dari f(x1k,x2k,..,xnk)  : ");
+                            out.println(res);
+                        } else {
+                            String fileOut = inputNamaFileKeluaran(in);
+                            FileWriter writer = new FileWriter(new File (fileOut));
+                            writer.write("Rumus y yang didapat :\n");
+                            writer.write("y =");
+                            for (int i = 0;i < sol.length;i++){
+                                if (i == 0)writer.write(String.format(" %f",sol[i]));
+                                else{
+                                    if (sol[i] >= 0){
+                                        writer.write(String.format(" + %fx%d",sol[i],i));
+                                    } else {
+                                        writer.write(String.format(" - %fx%d",-sol[i],i));
+                                    }
+                                }
+                            }
+                            writer.write("\n");
+                            double res = 0;
+                            for (int i = 0;i < sol.length;i++){
+                                if (i == 0) res += sol[0];
+                                else res += sol[i]*xk[i-1];
+                            }
+                            writer.write("Nilai yang didapatkan dari f(x1k,x2k,..,xnk)  :\n");
+                            writer.write(Double.toString(res));
+                        }
+                        
+                    } else {
+                        out.println("Tidak ada solusi unik!");
+                    }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
                     break;

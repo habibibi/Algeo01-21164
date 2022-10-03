@@ -1,3 +1,5 @@
+package Matriks;
+
 public class Invers {
     public static boolean isExistInv(Matrix M)
    // Cek apakah matriks m memiliki invers

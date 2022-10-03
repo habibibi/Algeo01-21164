@@ -1,3 +1,5 @@
+package Matriks;
+
 public class Determinan {   
     public static double detCofactorExpansion(Matrix m)
     // Mengembalikan nilai determinan dari m dengan menggunakan metode ekspansi kofaktor

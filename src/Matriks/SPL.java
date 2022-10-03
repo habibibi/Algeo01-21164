@@ -1,3 +1,4 @@
+package Matriks;
 import java.io.*;
 
 public class SPL {
@@ -205,7 +206,7 @@ public class SPL {
         for (int k = 0;k < augM.getRow();k++){
             Matrix tmp = new Matrix(A);
             for (int i = 0;i < tmp.getRow();i++){
-                tmp.mem[i][k] = augM.mem[i][augM.getLastIdxRow()];
+                tmp.mem[i][k] = augM.mem[i][augM.getLastIdxCol()];
             }
             double detK = Determinan.detReductionRow(tmp);
             sol[k] = detK/detA; 
