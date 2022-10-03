@@ -261,11 +261,8 @@ public class SPL {
             return solusi;
         } else if
             ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] == 0) && (Hasil.mem[Hasil.getRow()-1][Hasil.getCol()-1] != 0)){
-            System.out.println("Tidak ada Solusi yang Memenuhi");
             return null;
         } else{
-            System.out.println("Persamaan Memiliki Tak Terhingga Solusi");
-            printParaToScr(augM);
             return null;
         }
     }
