@@ -23,12 +23,12 @@ public class SPL {
         for (int i = 0;i < echeM.getRow();i++){
             boolean isAllZero = true;
             for (int j = 0;j < echeM.getCol()-1;j++){
-                if (echeM.mem[i][j] != 0) {
+                if (echeM.mem[i][j] != 0.0) {
                     isAllZero = false;
                     break;
                 }
             }
-            if (!isAllZero && echeM.mem[i][echeM.getLastIdxCol()] == 0){
+            if (isAllZero && echeM.mem[i][echeM.getLastIdxCol()] != 0){
                 return false;
             }
         }
