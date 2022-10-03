@@ -192,7 +192,7 @@ public class SPL {
         } else {
             return null;
         }
-        
+
     }
 
     public static double[] solKaidahCramer(Matrix augM)
@@ -212,7 +212,7 @@ public class SPL {
         }
         return sol;
     }
-    public static void solGauss(Matrix augM){
+    public static double[] solGauss(Matrix augM){
         Matrix Persamaan = new Matrix();
         Matrix Hasil = new Matrix();
         for (int m = 0; m < augM.getRow(); ++m){
@@ -249,11 +249,24 @@ public class SPL {
                 }
             }
         }
-        // Ditaro di main.java aja ini
-        // // Menampilkan matriks eselon baris yang terbentuk
-        // printEselonBaris(Persamaan, Hasil, augM.getRow(), augM.getCol());
-        // // Substitusi mundur
-        // validasi(Persamaan, Hasil);
+        if ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] != 0)){
+            double[] solusi = new double[Persamaan.getCol()];
+            for (int i = Persamaan.getRow() - 1; i >= 0; i--){
+                double jumlah = 0.0;
+                for (int j = i + 1; j < Persamaan.getCol()+1; j++){
+                    jumlah += Persamaan.mem[i][j] * solusi[j];
+                }
+                solusi[i] = (Hasil.mem[i][0] - jumlah) / Persamaan.mem[i][i];
+            }
+            return solusi;
+        } else if
+            ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] == 0) && (Hasil.mem[Hasil.getRow()-1][Hasil.getCol()-1] != 0)){
+            System.out.println("Tidak ada Solusi yang Memenuhi");
+            return null;
+        } else{
+            System.out.println("Persamaan Memiliki Tak Terhingga Solusi"); 
+            return null;
+        }
     }
 
     public static void printEselonBaris(Matrix Persamaan, Matrix Hasil, int M, int N){
@@ -273,25 +286,5 @@ public class SPL {
             System.out.printf("%.3f ", solusi.mem[i][0]);
         }
         System.out.println();
-    }
-    
-    public static void validasi(Matrix Persamaan, Matrix Hasil){
-        if ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] != 0)){
-            Matrix solusi = new Matrix();
-            for (int i = Persamaan.getRow() - 1; i >= 0; i--){
-                double jumlah = 0.0;
-                for (int j = i + 1; j < Persamaan.getCol()+1; j++){
-                    jumlah += Persamaan.mem[i][j] * solusi.mem[j][0];
-                }
-                solusi.mem[i][0] = (Hasil.mem[i][0] - jumlah) / Persamaan.mem[i][i];
-            }
-            /** Menampilkan solusi yang terbentuk **/
-            printSolusi(solusi);
-        } else if
-            ((Persamaan.mem[Persamaan.getRow()-1][Persamaan.getCol()-2] == 0) && (Hasil.mem[Hasil.getRow()-1][Hasil.getCol()-1] != 0)){
-            System.out.println("Tidak ada Solusi yang Memenuhi"); 
-        } else{
-            System.out.println("Persamaan Memiliki Tak Terhingga Solusi"); 
-        }
     }
 }
