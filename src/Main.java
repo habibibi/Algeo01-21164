@@ -1,8 +1,5 @@
 import java.util.Scanner;
-import Matriks.Matrix;
-import Matriks.Invers;
-import Matriks.Determinan;
-import Matriks.SPL;
+import matriks.*;
 import static java.lang.System.out;
 import java.io.*;
 
@@ -384,6 +381,7 @@ public class Main {
                         dataXY.readFromFile(namafile);
                         n = dataXY.getRow()-1;
                         tempX = new Matrix(n+1, n+1);
+                        tempY = new Matrix(n+1, 1);
                         x = new double[n+1];
                         y = new double[n+1];
                         for (int i = 0; i <= n; ++i){
@@ -392,7 +390,7 @@ public class Main {
                             dataX = new Matrix(n+1, n+1);
                             dataY = new Matrix(n+1, 1);
                             for (int j = 0; j <= n; ++j){
-                                dataX.mem[i][j] = Math.pow(x[j], j);
+                                dataX.mem[i][j] = Math.pow(x[i], j);
                                 tempX.mem[i][j] = dataX.mem[i][j];
                             }
                             dataY.mem[i][0] = y[i];

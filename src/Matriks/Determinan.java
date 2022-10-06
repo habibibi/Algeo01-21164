@@ -1,4 +1,4 @@
-package Matriks;
+package matriks;
 
 public class Determinan {   
     public static double detCofactorExpansion(Matrix m)

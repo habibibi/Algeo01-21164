@@ -1,4 +1,4 @@
-package Matriks;
+package matriks;
 import java.util.Scanner;
 import java.io.*;
 

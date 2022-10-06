@@ -1,4 +1,4 @@
-package Matriks;
+package matriks;
 import java.io.*;
 
 public class SPL {
@@ -89,13 +89,14 @@ public class SPL {
                     boolean first = true;
                     for (int k = j+1;k < echeform.getCol()-1;k++){
                         if (echeform.mem[i][k] != 0.0){
+                            double koef = -echeform.mem[i][k];
                             if (first) {
-                                System.out.printf(" %.2fa%d",echeform.mem[i][k],angka[k]);
+                                System.out.printf(" %.2fa%d",koef,angka[k]);
                                 first = false;
-                            } else if (-echeform.mem[i][j] > 0){
-                                System.out.printf(" + %.2fa%d",-echeform.mem[i][k],angka[k]);
+                            } else if (koef > 0){
+                                System.out.printf(" + %.2fa%d",koef,angka[k]);
                             } else {
-                                System.out.printf(" - %.2fa%d",echeform.mem[i][k],angka[k]);
+                                System.out.printf(" - %.2fa%d",-koef,angka[k]);
                             }
                         }
                     }
@@ -154,12 +155,13 @@ public class SPL {
                     writer.write(String.format("x%d =",j+1));
                     boolean first = true;
                     for (int k = j+1;k < echeform.getCol()-1;k++){
-                        if (echeform.mem[i][k] != 0.0){
+                        double koef = -echeform.mem[i][k];
+                        if (koef != 0.0){
                             if (first) {
-                                writer.write(String.format(" %.2fa%d",echeform.mem[i][k],angka[k]));
+                                writer.write(String.format(" %.2fa%d",koef,angka[k]));
                                 first = false;
-                            } else if (-echeform.mem[i][j] > 0){
-                                writer.write(String.format(" + %.2fa%d",-echeform.mem[i][k],angka[k]));
+                            } else if (koef > 0){
+                                writer.write(String.format(" + %.2fa%d",koef,angka[k]));
                             } else {
                                 writer.write(String.format(" - %.2fa%d",echeform.mem[i][k],angka[k]));
                             }
@@ -169,7 +171,7 @@ public class SPL {
                     if (first) writer.write(String.format(" %f",echeform.mem[i][lastidx]));
                     else if (echeform.mem[i][lastidx] < 0) writer.write(String.format(" - %.2f",-echeform.mem[i][lastidx]));
                     else if (echeform.mem[i][lastidx] > 0) writer.write(String.format(" + %.2f",echeform.mem[i][lastidx]));
-                    System.out.println();
+                    writer.write("\n");
                     befAda = j;
                     break;
                 }

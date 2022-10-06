@@ -1,4 +1,4 @@
-package Matriks;
+package matriks;
 
 public class Invers {
     public static boolean isExistInv(Matrix M)
@@ -57,9 +57,7 @@ public class Invers {
                 if ((i + j)%2 == 1) mCof.mem[i][j] *= -1;
             }
         }
-        mCof.printToScr();
         Matrix.transpose(mCof);
-        mCof.printToScr();
         mCof.timesConst(1/det);
         return mCof;
     }
