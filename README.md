@@ -23,6 +23,7 @@ Permasalahan yang dapat diselesaikan program ini:
 
 Program ini dapat menerima input dan memberikan output melalui terminal maupun file. 
 Untuk input melalui file, sudah diberikan contoh input pada test/input/ untuk masing-masing problem.
+Untuk masukan SPL dengan file, masukan berupa augmented matrix dari SPL tersebut.
 
 
 ## Anggota Kelompok :
