@@ -162,8 +162,8 @@ public class Main {
                         }
                     } else {
                         if (solusi != null){
-                            String fileOut = inputNamaFileKeluaran(in);
-                            FileWriter writer = new FileWriter(new File (fileOut));
+                        String fileOut = inputNamaFileKeluaran(in);
+                        FileWriter writer = new FileWriter(new File (fileOut));
                             for (int i = 0;i < solusi.length;i++){
                                 writer.write(String.format("x%i : %.2f",i,solusi[i]));
                             }
@@ -303,69 +303,149 @@ public class Main {
                     Matrix dataXY = new Matrix();
                     Matrix dataX = new Matrix();
                     Matrix dataY = new Matrix();
-                    Matrix koefA = new Matrix();
-                    double[] dataA;
+                    Matrix dataA = new Matrix();
+                    Matrix tempX = new Matrix();
+                    Matrix tempY = new Matrix();
                     int n;
+                    String fungsi = "";
                     double[] x, y;
-                    double inputX, nilaifx;
+                    double inputX, nilaifx = 0.0;
                     if (jenisMasukan == 1){
                         out.println("Masukkan nilai n : ");
                         n = in.nextInt();
+                        tempX = new Matrix(n+1, n+1);
+                        tempY = new Matrix(n+1, 1);
                         x = new double[n+1];
                         y = new double[n+1];
                         out.println("Masukkan titik-titik x dan y (cukup dipisah spasi tanpa kurung)");
                         out.println("Dimulai dari x0 y0, x1 y1, ... xn yn :");
                         for (int i = 0; i <= n; ++i){
+                            dataX = new Matrix(n+1, n+1);
+                            dataY = new Matrix(n+1, 1);
                             x[i] = in.nextDouble();
+                            for (int j = 0; j <= n; ++j){
+                                dataX.mem[i][j] = Math.pow(x[i], j);
+                                tempX.mem[i][j] = dataX.mem[i][j];
+                            }
                             y[i] = in.nextDouble();
+                            dataY.mem[i][0] = y[i];
+                            tempY.mem[i][0] = dataY.mem[i][0];
                         }
-                    } else{
+                        dataA = new Matrix(n+1, 1);
+                        out.println();
+                        int jenisKeluaran = inputJenisKeluaran(in);
+                        if (jenisKeluaran == 1){
+                            if (Invers.invGaussJordan(tempX) != null){
+                                dataA = Matrix.mult(Invers.invGaussJordan(tempX), tempY);
+                                String elmtA, elmtX;
+                                for (int k = 0; k <= n; ++k){
+                                    elmtA = Double.toString(dataA.mem[k][0]);
+                                    elmtX = Double.toString(k);
+                                    if (k == n){
+                                        fungsi = fungsi.concat(elmtA + "x^" + elmtX);
+                                    } else{
+                                    fungsi = fungsi.concat(elmtA + "x^" + elmtX + " + ");
+                                    }
+                                }
+                                out.println("Persamaan f(x) = " + fungsi + "\n");
+                                out.print("Masukkan nilai x yang ingin dicari nilainya : ");
+                                inputX = in.nextDouble();
+                                for (int l = 0; l <= n; ++l){
+                                    nilaifx += dataA.mem[l][0]*Math.pow(inputX, l);
+                                }
+                                out.println(nilaifx);    
+                            } else {
+                                out.println("Tidak ditemukan solusi");
+                            }
+                        } else {
+                            if (Invers.invGaussJordan(tempX) != null){
+                                dataA = Matrix.mult(Invers.invGaussJordan(tempX), tempY);
+                                String elmtA, elmtX;
+                                for (int k = 0; k <= n; ++k){
+                                    elmtA = Double.toString(dataA.mem[k][0]);
+                                    elmtX = Double.toString(k);
+                                    if (k == n){
+                                        fungsi = fungsi.concat(elmtA + "x^" + elmtX);
+                                    } else{
+                                        fungsi = fungsi.concat(elmtA + "x^" + elmtX + " + ");
+                                    }
+                                }
+                            String fileDir = inputNamaFileKeluaran(in);
+                            FileWriter writer = new FileWriter(new File(fileDir));
+                            writer.write(fungsi);
+                            writer.close();
+                            out.println("Fungsi sudah dicetak ke "+ fileDir);
+                            } else {
+                                out.println("Tidak ditemukan solusi");
+                            }
+                        }
+                    } else {
                         String namafile = inputNamaFileMasukan(in);
                         dataXY.readFromFile(namafile);
                         n = dataXY.getRow()-1;
+                        tempX = new Matrix(n+1, n+1);
                         x = new double[n+1];
                         y = new double[n+1];
                         for (int i = 0; i <= n; ++i){
                             x[i] = dataXY.mem[i][0];
                             y[i] = dataXY.mem[i][1];
+                            dataX = new Matrix(n+1, n+1);
+                            dataY = new Matrix(n+1, 1);
+                            for (int j = 0; j <= n; ++j){
+                                dataX.mem[i][j] = Math.pow(x[j], j);
+                                tempX.mem[i][j] = dataX.mem[i][j];
+                            }
+                            dataY.mem[i][0] = y[i];
+                            tempY.mem[i][0] = dataY.mem[i][0];
                         }
-                    }
-                    dataX = new Matrix(n+1, n+1);
-                    dataY = new Matrix(n+1, 1);
-                    for (int i = 0; i <= n; ++i){
-                        for (int j = 0; j <= n; ++j){
-                            dataX.mem[i][j] = Math.pow(x[j], j);
+                        dataA = new Matrix(n+1, 1);
+                        out.println();
+                        int jenisKeluaran = inputJenisKeluaran(in);
+                        if (jenisKeluaran == 1){
+                            if (Invers.invGaussJordan(tempX) != null){
+                                dataA = Matrix.mult(Invers.invGaussJordan(tempX), tempY);
+                                String elmtA, elmtX;
+                                for (int k = 0; k <= n; ++k){
+                                    elmtA = Double.toString(dataA.mem[k][0]);
+                                    elmtX = Double.toString(k);
+                                    if (k == n){
+                                        fungsi = fungsi.concat(elmtA + "x^" + elmtX);
+                                    } else{
+                                    fungsi = fungsi.concat(elmtA + "x^" + elmtX + " + ");
+                                    }
+                                }
+                                out.println("Persamaan f(x) = " + fungsi + "\n");
+                                out.print("Masukkan nilai x yang ingin dicari nilainya : ");
+                                inputX = in.nextDouble();
+                                for (int l = 0; l <= n; ++l){
+                                    nilaifx += dataA.mem[l][0]*Math.pow(inputX, l);
+                                }
+                                out.println(nilaifx);    
+                            } else {
+                                out.println("Tidak ditemukan solusi");
+                            }
+                        } else {
+                            if (Invers.invGaussJordan(tempX) != null){
+                                dataA = Matrix.mult(Invers.invGaussJordan(tempX), tempY);
+                                String elmtA, elmtX;
+                                for (int k = 0; k <= n; ++k){
+                                    elmtA = Double.toString(dataA.mem[k][0]);
+                                    elmtX = Double.toString(k);
+                                    if (k == n){
+                                        fungsi = fungsi.concat(elmtA + "x^" + elmtX);
+                                    } else{
+                                        fungsi = fungsi.concat(elmtA + "x^" + elmtX + " + ");
+                                    }
+                                }
+                            String fileDir = inputNamaFileKeluaran(in);
+                            FileWriter writer = new FileWriter(new File(fileDir));
+                            writer.write(fungsi);
+                            writer.close();
+                            out.println("Fungsi sudah dicetak ke "+ fileDir);
+                            } else {
+                                out.println("Tidak ditemukan solusi");
+                            }
                         }
-                        dataY.mem[i][0] = y[i];
-                    }
-                    dataA = new double[n+1];
-                    koefA = new Matrix(n+1, 1);
-                    for (int i=0; i<n+1; i++){
-                        koefA.mem[i][1] = dataA[i];
-                    }
-                    if (Invers.isExistInv(koefA)){
-                        dataA = SPL.solInverse(dataX, dataY);
-                        String fungsi = "";
-                        String elmtA, elmtX;
-                        for (int k = 0; k <= n; ++k){
-                            elmtA = Double.toString(dataA[k]);
-                            elmtX = Double.toString(k);
-                            fungsi = fungsi.concat(elmtA + "x^" + elmtX + " ");
-                        }
-                        out.println("Persamaan f(x) = " + fungsi);
-                        out.println("Masukkan nilai x yang ingin dicari nilainya : ");
-                        inputX = in.nextDouble();
-                        nilaifx = 0.0;
-                        for (int l = 0; l <= n; ++l){
-                            nilaifx += dataA[l]*Math.pow(inputX, l);
-                        }
-                        out.printf("Nilai dari f(%lf) = %lf\n", x, nilaifx);
-                        FileWriter writer = new FileWriter("test/out.txt");
-                        writer.write(fungsi);
-                        writer.write(Double.toString(nilaifx)+"\n");
-                        writer.close();
-                    } else {
-                        out.println("Tidak dapat ditemukan solusi uniknya");
                     }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
@@ -412,12 +492,12 @@ public class Main {
                     int jenisKeluaran = inputJenisKeluaran(in);
                     if (jenisKeluaran == 1){
                         out.printf("Nilai dari f(%.2f,%.2f) adalah %.2f\n",x,y,res);
-                    }else {
-                        String fileDir = inputNamaFileKeluaran(in);
-                        FileWriter writer = new FileWriter(new File(fileDir));
-                        writer.write(Double.toString(res)+"\n");
-                        writer.close();
-                    }
+                }else {
+                    String fileDir = inputNamaFileKeluaran(in);
+                    FileWriter writer = new FileWriter(new File(fileDir));
+                    writer.write(Double.toString(res)+"\n");
+                    writer.close();
+                }
                     out.print("Tekan ENTER untuk kembali ke menu utama");
                     System.in.read();
                     break;
